@@ -1,16 +1,14 @@
+import * as bodyParser from 'body-parser';
 import { Router } from "express";
 import { getRepository } from "typeorm";
 import { User } from "../entity/User";
-import * as basicAuth from 'express-basic-auth';
-import * as bodyParser from 'body-parser';
-import { ServerResponse } from "http";
 
 const userDTO = (user: User) => {
     if (!user) {
         return undefined;
     }
     return {
-        category: user.category.value,
+        category: user.category?.value || '',
         id: user.id,
         firstName: user.firstName,
         lastName: user.lastName,
@@ -34,10 +32,8 @@ router.post('/', (req, res) => {
                 username: req.body.username
             }
         }).then(value => {
-
-            let user = value[0];
-
-            if (user) {
+            if (value.length > 0) {
+                let user = value[0];
                 (req.session as any).user = user;
                 req.session.save((err) => { console.log(err) });
                 res.json(userDTO(user));
@@ -53,7 +49,6 @@ router.post('/', (req, res) => {
                 username: req.body.user.username
             }
         }).then(value => {
-            console.log('user')
             if (value) {
                 res.json({
                     error: 'user already exists'
@@ -62,7 +57,6 @@ router.post('/', (req, res) => {
                 return getRepository(User).insert(req.body.user);
             }
         }).then(value => {
-            console.log('inserted');
             return getRepository(User).findOne(value.identifiers[0].id);
         }).then(value => {
             res.json(value);
@@ -84,7 +78,6 @@ router.post('/', (req, res) => {
     if (req.body.action === 'logout') {
         req.session.destroy((err) => res.json(err));
         res.json(true);
-        return;
     }
 })
 

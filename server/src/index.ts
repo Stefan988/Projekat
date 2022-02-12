@@ -1,16 +1,14 @@
+import * as cors from 'cors';
+import * as express from 'express';
+import * as session from 'express-session';
+import * as fs from 'fs';
+import * as https from 'https';
 import "reflect-metadata";
 import { createConnection } from "typeorm";
-import * as express from 'express';
-import * as session from 'express-session'
-import UserRoute from './route/UserRoute'
-import PostRoute from './route/PostRoute'
-import PostCategoryRoute from './route/PostCategoryRoute'
-import WeatherRoute from './route/WeatherRoute'
-import * as cors from 'cors';
-import * as bodyParser from 'body-parser';
-import * as path from 'path'
-import * as https from 'https'
-import * as fs from 'fs'
+import PostCategoryRoute from './route/PostCategoryRoute';
+import PostRoute from './route/PostRoute';
+import UserRoute from './route/UserRoute';
+import WeatherRoute from './route/WeatherRoute';
 createConnection().then(async connection => {
 
 
@@ -25,7 +23,7 @@ createConnection().then(async connection => {
         origin: 'http://localhost:3000'
 
     }));
-    app.use(bodyParser.json());
+    app.use(express.json());
 
     app.use(session({
         secret: 'keyboard cat',
@@ -33,6 +31,7 @@ createConnection().then(async connection => {
 
         saveUninitialized: false,
         cookie: {
+            sameSite: 'none',
             secure: true,
             maxAge: 1000 * 60 * 10,//10min
             httpOnly: true,

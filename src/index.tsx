@@ -9,6 +9,8 @@ import { StateType } from './model/store.type';
 import rootReducer from './rootReducer';
 import * as serviceWorker from './serviceWorker';
 import 'semantic-ui-css/semantic.min.css'
+import Axios from 'axios';
+Axios.defaults.withCredentials = true;
 const store = createStore<StateType, any, any, any>(rootReducer);
 ReactDOM.render(
   <Provider store={store}>

@@ -32,9 +32,9 @@ router.get('/:id', (req, res) => {
 
     getRepository(Post).findOne(req.params.id).then(value => {
         if (req.headers["content-type"] === 'application/xml') {
-            res.send({
+            res.send(builder.buildObject({
                 post: value
-            })
+            }))
         } else {
             res.json(value);
         }
